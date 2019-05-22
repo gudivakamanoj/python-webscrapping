@@ -1,0 +1,29 @@
+from urllib.request import urlopen as uReq
+from bs4 import BeautifulSoup as soup
+
+my_url='https://www.fuller.edu/faculty/'
+
+uClient = uReq(my_url)
+page_html = uClient.read()
+uClient.close()
+page_soup = soup(page_html, "html.parser")
+containers1 = page_soup.findAll("h2",{"class":"fac-archive-name"})
+containers2 = page_soup.findAll("div",{"class":"fac-archive-school"})
+containers3 = page_soup.findAll("span",{"class":"fac-archive-title"})
+filename = "faculty.csv"
+f=open(filename,"w")
+headers="Faculty_Name,School_Name,faculty_details\n"
+f.write(headers)
+for container1 in containers1 :
+	faculty_name=container1.a["title"]
+	print("Faculty name :" + faculty_name)
+	f.write(faculty_name+"\n")
+for container2 in containers2 :
+	school_name=container2.text.strip()
+	print("School_name :" + school_name)
+	f.write(school_name+"\n")
+for container3 in containers3 :
+	faculty_details=container3.text.strip()
+	print("faculty_details :" + faculty_details)
+	f.write(faculty_details+"\n")
+f.close()
